@@ -1,0 +1,10 @@
+						PRAVILA BLACKJACKA:
+Blackjack se igra protiv kuce. Cilj igre je uzeti karte sto blize, ali ne i vise od vrijednost 21 i pobijediti djelitelja.
+	Medutim, ako Vasa ruka prijede 21, smatrati ce se da ste izgubili bez obzira na ruku djelitelja.
+				Kralj, kraljica i decko vrijede 10 bodova.
+			    Karte s brojevima zadrzavaju nominalnu vrijednost.
+	Asevi(11) se mogu racunati kao 1 bod ili 11 bodova, ovisno o tome kako vise odgovara igracu.
+					
+					SVI NOVI IGRACI KRECU S 500 DOLARA.
+	
+	
