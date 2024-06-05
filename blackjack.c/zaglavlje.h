@@ -32,6 +32,7 @@ HAND* izradiHand();
 void dodajKartu(HAND* hand, int card);
 void freeHand(HAND* hand);
 void ispisiStatistiku(Player* player);
+void ispisiRuku(int ruka[], int brojKarata);
 void zavrsiIgru(Player* player, HAND* rukaDiler, HAND* rukaIgrac, float ulog, int bodoviIgrac, int bodoviDiler);
 void errPoruka(const char* message);
 int comparePlayers(const void* a, const void* b);

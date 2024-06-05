@@ -19,12 +19,15 @@ int vrijednostRuke(int ruka[], int brojKarata) {
     return bodovi;
 }
 
-void ispisiRuku(int ruka[], int brojKarata) {
-    for (int i = 0; i < brojKarata; i++) {
-        printf("%d ", ruka[i]);
+void ispisiRuku(int ruka[], int brojKarata) {  
+    if (brojKarata == 0) {
+        printf("\n");
+        return;
     }
-    printf("\n");
+    printf("%d ", ruka[0]);
+    ispisiRuku(&ruka[1], brojKarata - 1);  //rekurzija :OOOO
 }
+
 
 void pravila() {
     system("cls");
@@ -230,7 +233,8 @@ void zavrsiIgru(Player* player, HAND* rukaDiler, HAND* rukaIgrac, float ulog, in
         if (ispisatiStatistiku == 'd') {
             ispisiStatistiku(player);
             printf("Ukupno odigranih igara: %d\n", ukupnoIgrica);
-            printf("Ukupno podeljenih karata: %d\n", ukupnoDilaneKarte);
+            printf("Ukupno podeljenih karata: %d\n\n\n", ukupnoDilaneKarte);
+
         }
         mainMenu(player);
     }
