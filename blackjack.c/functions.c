@@ -5,7 +5,7 @@ void ispisiStatistiku(Player* player) {
     if (file == NULL) {
         file = fopen("statistika.bin", "wb");
         if (file == NULL) {
-            handleError("Greska pri otvaranju datoteke");
+            errPoruka("Greska pri otvaranju datoteke");
             return;
         }
     }
@@ -23,57 +23,8 @@ void ispisiStatistiku(Player* player) {
     printf("Statistika upisana u datoteku.\n");
 }
 
-int kopirajDatoteku(const char* source, const char* dest) {
-    FILE* srcFile = fopen(source, "rb");
-    if (srcFile == NULL) {
-        handleError("Ne mogu otvoriti izvorni fajl za kopiranje");
-        return -1;
-    }
 
-    FILE* destFile = fopen(dest, "wb");
-    if (destFile == NULL) {
-        handleError("Ne mogu otvoriti destinacijski fajl za kopiranje");
-        fclose(srcFile);
-        return -1;
-    }
-
-    fseek(srcFile, 0, SEEK_END);
-    long fileSize = ftell(srcFile);
-    rewind(srcFile);
-
-    char* buffer = (char*)malloc(fileSize * sizeof(char));
-    if (buffer == NULL) {
-        handleError("Ne mogu alocirati memoriju za kopiranje fajla");
-        fclose(srcFile);
-        fclose(destFile);
-        return -1;
-    }
-
-    size_t bytesRead = fread(buffer, sizeof(char), fileSize, srcFile);
-    if (bytesRead != fileSize) {
-        handleError("Greska pri citanju iz izvornog fajla");
-        free(buffer);
-        fclose(srcFile);
-        fclose(destFile);
-        return -1;
-    }
-
-    size_t bytesWritten = fwrite(buffer, sizeof(char), fileSize, destFile);
-    if (bytesWritten != fileSize) {
-        handleError("Greska pri pisanju u destinacijski fajl");
-        free(buffer);
-        fclose(srcFile);
-        fclose(destFile);
-        return -1;
-    }
-
-    free(buffer);
-    fclose(srcFile);
-    fclose(destFile);
-    return 0;
-}
-
-void handleError(const char* message) {
+void errPoruka(const char* message) {
     fprintf(stderr, "%s: %s\n", message, strerror(errno));
 }
 
@@ -103,7 +54,7 @@ int strcasecmp(const char* s1, const char* s2) {
 void sortAndSearchStatistics() {
     FILE* file = fopen("statistika.bin", "rb");
     if (file == NULL) {
-        handleError("Ne mogu otvoriti fajl za citanje statistike");
+        errPoruka("Ne mogu otvoriti fajl za citanje statistike");
         return;
     }
 
@@ -117,7 +68,7 @@ void sortAndSearchStatistics() {
 
     Player* players = (Player*)malloc(brojIgraca * sizeof(Player));
     if (players == NULL) {
-        handleError("Greska pri alociranju memorije");
+        errPoruka("Greska pri alociranju memorije");
         fclose(file);
         return;
     }
@@ -156,6 +107,7 @@ void sortAndSearchStatistics() {
     }
 
     free(players);
+
 }
 
 int comparePlayers(const void* a, const void* b) {
@@ -165,3 +117,14 @@ int comparePlayers(const void* a, const void* b) {
     if (playerB->balance < playerA->balance) return -1;
     return 0;
 }
+
+void removeStats() {
+    if (remove("statistika.bin") != 0) {
+        errPoruka("Greska pri brisanju datoteke");
+    }
+    else {
+        printf("Datoteka statistika.bin uspjesno obrisana\n");
+    }
+
+}
+
