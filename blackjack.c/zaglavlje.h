@@ -6,11 +6,13 @@
 #include <ctype.h>
 #include <time.h>
 
-#define MAXIME 50
+#define MAXIME 100
+#define DECKSIZE 52
+
 
 typedef struct {
     int* karte;
-    int velicina;
+    int brojKarata;
     int kapacitet;
 } HAND;
 
@@ -21,7 +23,16 @@ typedef struct {
     int losses;
 } Player;
 
-extern int ukupnoDilaneKarte; //extern use, nista drugo
+typedef enum {
+    IGRATI = 1,
+    PRAVILA,
+    STATISTIKA,
+    OBRISI_STATS,
+    IZLAZ
+} MenuOption;
+
+
+extern int ukupnoDilaneKarte;
 
 void mainMenu(Player* player);
 int start(Player* player);
@@ -40,5 +51,5 @@ void sortAndSearchStatistics();
 void trimWhitespace(char* str);
 void bankrot(Player* player);
 void removeStats();
-
+void cistiBuffer();
 
