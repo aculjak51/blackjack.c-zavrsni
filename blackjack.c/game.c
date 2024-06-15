@@ -50,13 +50,13 @@ void pravila() {
 }
 
 int start(Player* player) {
-    system("cls");
+   
     srand((unsigned)time(NULL));
     int nastaviti = 1;
     int validInput = 0;
 
     while (nastaviti) {
-        int spil[52] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10,
+        int spil[DECKSIZE] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10,
                          2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10,
                          2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10,
                          2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10,
@@ -67,6 +67,8 @@ int start(Player* player) {
         int bodoviDiler, bodoviIgrac;
         char izb;
         float ulog = 0;
+
+		system("cls");
 
         printf("Diler: Dobrodosli za stol %s! :)\n\n", player->ime);
         printf("Vas novcanik: %.2f $\n", player->balance);
@@ -80,6 +82,7 @@ int start(Player* player) {
             if (scanf("%f", &ulog) != 1) {
                 while (getchar() != '\n');
                 printf("Neispravan unos. Molimo unesite iznos u brojcanom formatu.\n");
+			
             }
             else {
                 validInput = (ulog > 0 && ulog <= player->balance);
@@ -100,13 +103,13 @@ int start(Player* player) {
         dodajKartu(rukaIgrac, spil[rand() % 52]);
 
         printf("\nTvoja ruka:\n");
-        ispisiRuku(rukaIgrac->karte, rukaIgrac->velicina);
-        bodoviIgrac = vrijednostRuke(rukaIgrac->karte, rukaIgrac->velicina);
+        ispisiRuku(rukaIgrac->karte, rukaIgrac->brojKarata);
+        bodoviIgrac = vrijednostRuke(rukaIgrac->karte, rukaIgrac->brojKarata);
         printf("Vrijednost tvoje ruke: %d\n\n", bodoviIgrac);
 
         printf("Ruka dilera:\n");
-        ispisiRuku(rukaDiler->karte, rukaDiler->velicina);
-        bodoviDiler = vrijednostRuke(rukaDiler->karte, rukaDiler->velicina);
+        ispisiRuku(rukaDiler->karte, rukaDiler->brojKarata);
+        bodoviDiler = vrijednostRuke(rukaDiler->karte, rukaDiler->brojKarata);
         printf("Vrijednost dilerove ruke: %d\n\n", bodoviDiler);
 
         if (bodoviIgrac == 21) {
@@ -127,18 +130,24 @@ int start(Player* player) {
 
         int busted = 0;
         while (1) {
-            printf("Zelite li vuci novu kartu? (D/N): ");
-            scanf(" %c", &izb);
-
-            if (izb == 'n' || izb == 'N') {
-                break;
-            }
-            if (izb == 'D' || izb == 'd') {
+			validInput = 0;
+			do {
+				printf("Zelite li vuci novu kartu? (D/N): ");
+				scanf(" %c", &izb);
+				while (getchar() != '\n');
+				izb = tolower(izb);
+				validInput = (izb == 'd' || izb == 'n');
+				if (!validInput) {
+					printf("Neispravan unos. Molimo unesite D za da ili N za ne.\n");
+				}
+			} while (!validInput);
+            
+            if (izb == 'd') {
                 dodajKartu(rukaIgrac, spil[rand() % 52]);
                 ukupnoDilaneKarte++;
                 printf("\n\nTvoje nove karte su:\n");
-                ispisiRuku(rukaIgrac->karte, rukaIgrac->velicina);
-                bodoviIgrac = vrijednostRuke(rukaIgrac->karte, rukaIgrac->velicina);
+                ispisiRuku(rukaIgrac->karte, rukaIgrac->brojKarata);
+                bodoviIgrac = vrijednostRuke(rukaIgrac->karte, rukaIgrac->brojKarata);
                 printf("Vrijednost tvoje ruke: %d\n", bodoviIgrac);
                 printf("Vrijednost dilerove ruke: %d\n\n", bodoviDiler);
 
@@ -150,9 +159,10 @@ int start(Player* player) {
                     break;
                 }
             }
-            else {
-                printf("Nepoznat unos. (D/N)\n");
-            }
+			if (izb == 'n') {
+				break;
+			}
+
         }
 
         if (busted) {
@@ -163,12 +173,12 @@ int start(Player* player) {
         while (bodoviDiler < 17) {
             dodajKartu(rukaDiler, spil[rand() % 52]);
             ukupnoDilaneKarte++;
-            bodoviDiler = vrijednostRuke(rukaDiler->karte, rukaDiler->velicina);
+            bodoviDiler = vrijednostRuke(rukaDiler->karte, rukaDiler->brojKarata);
             printf("\nDiler uzima kartu.\n");
         }
 
         printf("\nKarte dilera su:\n");
-        ispisiRuku(rukaDiler->karte, rukaDiler->velicina);
+        ispisiRuku(rukaDiler->karte, rukaDiler->brojKarata);
         printf("Vrijednost dilerove ruke: %d\n", bodoviDiler);
         printf("Vrijednost tvoje ruke: %d\n", bodoviIgrac);
 
@@ -194,30 +204,29 @@ int start(Player* player) {
 
 
 void zavrsiIgru(Player* player, HAND* rukaDiler, HAND* rukaIgrac, float ulog, int bodoviIgrac, int bodoviDiler) {
-    static int ukupnoIgrica = 0;  //static koristen
+    static int ukupnoIgrica = 0;  // static koristen
     ukupnoIgrica++;
 
     freeHand(rukaDiler);
     freeHand(rukaIgrac);
-    int nastaviti;
+    char nastaviti;
     char ispisatiStatistiku;
     int validInput = 0;
 
     do {
-        printf("Zelite li igrati ponovo? (1 za da / 0 za ne): ");
-        if (scanf("%d", &nastaviti) != 1) {
-            while (getchar() != '\n');
-            printf("Neispravan unos. Molimo unesite 1 za da ili 0 za ne.\n");
-        }
-        else {
-            validInput = (nastaviti == 1 || nastaviti == 0);
-            if (!validInput) {
-                printf("Neispravan unos. Molimo unesite 1 za da ili 0 za ne.\n");
-            }
+        printf("Zelite li igrati ponovo? (D za da / N za ne): ");
+        scanf(" %c", &nastaviti);
+        nastaviti = tolower(nastaviti);
+        validInput = (nastaviti == 'd' || nastaviti == 'n');
+        if (!validInput) {
+            printf("Neispravan unos. Molimo unesite D za da ili N za ne.\n");
+            cistiBuffer();
+        } else {
+            cistiBuffer();  
         }
     } while (!validInput);
 
-    if (nastaviti == 0) {
+    if (nastaviti == 'n') {
         validInput = 0;
 
         do {
@@ -227,22 +236,18 @@ void zavrsiIgru(Player* player, HAND* rukaDiler, HAND* rukaIgrac, float ulog, in
             validInput = (ispisatiStatistiku == 'd' || ispisatiStatistiku == 'n');
             if (!validInput) {
                 printf("Neispravan unos. Molimo unesite D za da ili N za ne.\n");
+                cistiBuffer();
+            } else {
+                cistiBuffer();  
             }
         } while (!validInput);
 
         if (ispisatiStatistiku == 'd') {
             ispisiStatistiku(player);
-            printf("Ukupno odigranih igara: %d\n", ukupnoIgrica);
-            printf("Ukupno podeljenih karata: %d\n\n\n", ukupnoDilaneKarte);
-
         }
-        mainMenu(player);
-    }
-    else if (nastaviti == 1) {
-        system("cls");
-    }
-    else {
-        printf("Nepoznat unos. Povratak na glavni izbornik.\n");
+
+        printf("Ukupno odigranih igara: %d\n", ukupnoIgrica);
+        printf("Ukupno podjeljenih karata: %d\n\n\n", ukupnoDilaneKarte);
         mainMenu(player);
     }
 }
@@ -250,17 +255,17 @@ void zavrsiIgru(Player* player, HAND* rukaDiler, HAND* rukaIgrac, float ulog, in
 HAND* izradiHand() {
     HAND* hand = (HAND*)malloc(sizeof(HAND));
     hand->karte = (int*)malloc(10 * sizeof(int));
-    hand->velicina = 0;
+    hand->brojKarata = 0;
     hand->kapacitet = 10;
     return hand;
 }
 
 void dodajKartu(HAND* hand, int card) {
-    if (hand->velicina >= hand->kapacitet) {
-        hand->kapacitet *= 2;
+    if (hand->brojKarata >= hand->kapacitet) {
+        hand->kapacitet *= 2;  // podupla se kapacitet ako kolicina karata u ruci bude prevelika (za svaki slucaj)
         hand->karte = (int*)realloc(hand->karte, hand->kapacitet * sizeof(int));
     }
-    hand->karte[hand->velicina++] = card;
+    hand->karte[hand->brojKarata++] = card;
 }
 
 void freeHand(HAND* hand) {
