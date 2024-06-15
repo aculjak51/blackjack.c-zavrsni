@@ -1,4 +1,4 @@
-﻿#include "zaglavlje.h"
+#include "zaglavlje.h"
 
 void ispisiStatistiku(Player* player) {
     FILE* file = fopen("statistika.bin", "rb+");
@@ -54,7 +54,7 @@ int strcasecmp(const char* s1, const char* s2) {
 void sortAndSearchStatistics() {
     FILE* file = fopen("statistika.bin", "rb");
     if (file == NULL) {
-        errPoruka("Ne mogu otvoriti fajl za citanje statistike");
+        errPoruka("Nema igraca na listi.");
         return;
     }
 
@@ -68,7 +68,7 @@ void sortAndSearchStatistics() {
 
     Player* players = (Player*)malloc(brojIgraca * sizeof(Player));
     if (players == NULL) {
-        errPoruka("Greska pri alociranju memorije players");
+        errPoruka("Greska pri alociranju memorije");
         fclose(file);
         return;
     }
@@ -85,9 +85,9 @@ void sortAndSearchStatistics() {
             players[i].wins, players[i].losses);
     }
 
-    char searchName[50];
+    char searchName[MAXIME];
     printf("Unesite ime igraca za pretragu: ");
-    scanf("%s", searchName);
+    scanf("%49s", searchName);
     trimWhitespace(searchName);
 
     int found = 0;
@@ -118,17 +118,23 @@ int comparePlayers(const void* a, const void* b) {
     return 0;
 }
 
-void removeStats() {
+void removeStats() { //full reset
     if (remove("statistika.bin") != 0) {
         errPoruka("Greska pri brisanju datoteke");
     }
     else {
         printf("Datoteka statistika.bin uspjesno obrisana\n");
     }
+
+}
+
+void inline cistiBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
 }
 
 void mainMenu(Player* player) {
-    int izbor;
+    MenuOption izbor;
     char izaci;
     char del;
     int validInput;
@@ -145,43 +151,44 @@ void mainMenu(Player* player) {
 
         do {
             printf("Unesite svoj izbor: ");
-            if (scanf("%d", &izbor) != 1) {
-                while (getchar() != '\n');
+            if (scanf("%d", (int*)&izbor) != 1) {
                 printf("Neispravan unos. Molimo unesite broj od 1 do 5.\n");
                 validInput = 0;
+                cistiBuffer();
             }
             else {
-                validInput = (izbor >= 1 && izbor <= 5);
+                validInput = (izbor >= IGRATI && izbor <= IZLAZ);
                 if (!validInput) {
                     printf("Neispravan unos. Molimo unesite broj od 1 do 5.\n");
+                    cistiBuffer();
                 }
             }
         } while (!validInput);
 
         switch (izbor) {
-        case 1:
+        case IGRATI:
             printf("Unesite ime igraca: ");
-            scanf("%s", player->ime);
+            scanf("%49s", player->ime);  
             player->balance = 500.0;
             player->wins = 0;
             player->losses = 0;
             start(player);
             break;
-        case 2:
+        case PRAVILA:
             pravila();
             break;
-        case 3:
+        case STATISTIKA:
             sortAndSearchStatistics();
             break;
-        case 4:
+        case OBRISI_STATS:
             do {
                 printf("Jeste li sigurni da zelite izbrisati stats file? (D za da / N za ne): ");
                 scanf(" %c", &del);
-                while (getchar() != '\n');
                 del = tolower(del);
                 validInput = (del == 'd' || del == 'n');
                 if (!validInput) {
                     printf("Neispravan unos. Molimo unesite D za da ili N za ne.\n");
+                    cistiBuffer();
                 }
             } while (!validInput);
 
@@ -190,16 +197,16 @@ void mainMenu(Player* player) {
             }
             break;
 
-        case 5:
+        case IZLAZ:
             validInput = 0;
             do {
                 printf("Jeste li sigurni da zelite izaci iz programa? (D za da / N za ne): ");
                 scanf(" %c", &izaci);
-                while (getchar() != '\n');
                 izaci = tolower(izaci);
                 validInput = (izaci == 'd' || izaci == 'n');
                 if (!validInput) {
                     printf("Neispravan unos. Molimo unesite D za da ili N za ne.\n");
+                    cistiBuffer();
                 }
             } while (!validInput);
 
@@ -211,3 +218,4 @@ void mainMenu(Player* player) {
         }
     }
 }
+
