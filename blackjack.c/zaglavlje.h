@@ -6,7 +6,7 @@
 #include <ctype.h>
 #include <time.h>
 
-#define MAXIME 100
+#define MAXIME 50
 #define DECKSIZE 52
 
 
@@ -31,8 +31,7 @@ typedef enum {
     IZLAZ
 } MenuOption;
 
-
-extern int ukupnoDilaneKarte;
+extern int ukupnoDilaneKarte; //extern use, nista drugo
 
 void mainMenu(Player* player);
 int start(Player* player);
@@ -52,4 +51,5 @@ void trimWhitespace(char* str);
 void bankrot(Player* player);
 void removeStats();
 void cistiBuffer();
+
 
