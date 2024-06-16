@@ -54,7 +54,7 @@ int strcasecmp(const char* s1, const char* s2) {
 void sortAndSearchStatistics() {
     FILE* file = fopen("statistika.bin", "rb");
     if (file == NULL) {
-        errPoruka("Nema igraca na listi.");
+        errPoruka("Ne mogu otvoriti fajl za citanje statistike");
         return;
     }
 
@@ -87,7 +87,7 @@ void sortAndSearchStatistics() {
 
     char searchName[MAXIME];
     printf("Unesite ime igraca za pretragu: ");
-    scanf("%49s", searchName);
+    scanf("%s", searchName);
     trimWhitespace(searchName);
 
     int found = 0;
@@ -118,7 +118,7 @@ int comparePlayers(const void* a, const void* b) {
     return 0;
 }
 
-void removeStats() { //full reset
+void removeStats() {
     if (remove("statistika.bin") != 0) {
         errPoruka("Greska pri brisanju datoteke");
     }
@@ -144,7 +144,7 @@ void mainMenu(Player* player) {
         printf("____________________________________________________________________\n");
         printf("1. Zaigraj!\n");
         printf("2. Procitaj pravila igre.\n");
-        printf("3. Sortiraj i pretrazi statistiku.\n");
+        printf("3. Pretrazi statistiku.\n");
         printf("4. Obrisi stats file.\n");
         printf("5. Izlaz.\n");
         printf("____________________________________________________________________\n");
@@ -167,8 +167,9 @@ void mainMenu(Player* player) {
 
         switch (izbor) {
         case IGRATI:
+            cistiBuffer();
             printf("Unesite ime igraca: ");
-            scanf("%49s", player->ime);  
+            scanf("%49s", player->ime);
             player->balance = 500.0;
             player->wins = 0;
             player->losses = 0;
@@ -182,6 +183,7 @@ void mainMenu(Player* player) {
             break;
         case OBRISI_STATS:
             do {
+               cistiBuffer();
                 printf("Jeste li sigurni da zelite izbrisati stats file? (D za da / N za ne): ");
                 scanf(" %c", &del);
                 del = tolower(del);
