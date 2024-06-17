@@ -28,21 +28,6 @@ void errPoruka(const char* message) {
     fprintf(stderr, "%s: %s\n", message, strerror(errno));
 }
 
-void trimWhitespace(char* str) {
-    char* end;
-
-    while (isspace((unsigned char)*str)) str++;
-
-    if (*str == 0) {
-        return;
-    }
-
-    end = str + strlen(str) - 1;
-    while (end > str && isspace((unsigned char)*end)) end--;
-
-    end[1] = '\0';
-}
-
 int strcasecmp(const char* s1, const char* s2) {
     while (*s1 && (tolower(*s1) == tolower(*s2))) {
         s1++;
@@ -88,7 +73,6 @@ void sortAndSearchStatistics() {
     char searchName[MAXIME];
     printf("Unesite ime igraca za pretragu: ");
     scanf("%49s", searchName);
-    trimWhitespace(searchName);
 
     int found = 0;
     for (int i = 0; i < brojIgraca; i++) {
