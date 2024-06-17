@@ -39,7 +39,16 @@ int strcasecmp(const char* s1, const char* s2) {
 void sortAndSearchStatistics() {
     FILE* file = fopen("statistika.bin", "rb");
     if (file == NULL) {
-        errPoruka("Nema zapisanih igraca u statistici.");
+        printf("Nema zapisanih igraca u statistici. Kreiranje nove datoteke.\n");
+        file = fopen("statistika.bin", "wb");
+        if (file == NULL) {
+            errPoruka("Greska pri kreiranju datoteke");
+            return;
+        }
+        int brojIgraca = 0;
+        fwrite(&brojIgraca, sizeof(int), 1, file);
+        fclose(file);
+        printf("Nova datoteka statistika.bin je kreirana.\n");
         return;
     }
 
@@ -50,6 +59,7 @@ void sortAndSearchStatistics() {
         fclose(file);
         return;
     }
+
 
     Player* players = (Player*)malloc(brojIgraca * sizeof(Player));
     if (players == NULL) {
