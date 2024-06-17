@@ -72,6 +72,7 @@ int start(Player* player) {
         printf("Diler: Dobrodosli za stol %s! :)\n\n", player->ime);
         printf("Vas novcanik: %.2f $\n", player->balance);
 
+
         if (player->balance == 0.0) {
             bankrot(player);
         }
@@ -88,9 +89,11 @@ int start(Player* player) {
                 if (!validInput) {
                     if (ulog <= 0) {
                         printf("Ulog ne smije biti nula!\n");
+                        cistiBuffer();
                     }
                     else {
                         printf("Nemate dovoljno sredstava na racunu.\n");
+                        cistiBuffer();
                     }
                 }
             }
