@@ -54,7 +54,7 @@ int strcasecmp(const char* s1, const char* s2) {
 void sortAndSearchStatistics() {
     FILE* file = fopen("statistika.bin", "rb");
     if (file == NULL) {
-        errPoruka("Ne mogu otvoriti fajl za citanje statistike");
+        errPoruka("Nema zapisanih igraca u statistici.");
         return;
     }
 
@@ -87,7 +87,7 @@ void sortAndSearchStatistics() {
 
     char searchName[MAXIME];
     printf("Unesite ime igraca za pretragu: ");
-    scanf("%s", searchName);
+    scanf("%49s", searchName);
     trimWhitespace(searchName);
 
     int found = 0;
@@ -107,7 +107,7 @@ void sortAndSearchStatistics() {
     }
 
     free(players);
-
+    cistiBuffer();
 }
 
 int comparePlayers(const void* a, const void* b) {
