@@ -173,6 +173,7 @@ void mainMenu(Player* player) {
             player->balance = 500.0;
             player->wins = 0;
             player->losses = 0;
+            cistiBuffer();
             start(player);
             break;
         case PRAVILA:
