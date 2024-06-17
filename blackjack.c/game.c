@@ -79,8 +79,9 @@ int start(Player* player) {
         do {
             printf("Dodajte ulog: ");
             if (scanf("%f", &ulog) != 1) {
-                while (getchar() != '\n');
+                cistiBuffer();
                 printf("Neispravan unos. Molimo unesite iznos u brojcanom formatu.\n");
+                validInput = 0;
             }
             else {
                 validInput = (ulog > 0 && ulog <= player->balance);
@@ -93,8 +94,9 @@ int start(Player* player) {
                     }
                 }
             }
-            cistiBuffer();
         } while (!validInput);
+
+        cistiBuffer();
 
         dodajKartu(rukaDiler, spil[rand() % 52]);
         dodajKartu(rukaDiler, spil[rand() % 52]);
