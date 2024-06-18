@@ -101,10 +101,10 @@ int start(Player* player) {
 
         cistiBuffer();
 
-        dodajKartu(rukaDiler, spil[rand() % 52]);
-        dodajKartu(rukaDiler, spil[rand() % 52]);
-        dodajKartu(rukaIgrac, spil[rand() % 52]);
-        dodajKartu(rukaIgrac, spil[rand() % 52]);
+        dodajKartu(rukaDiler, spil[rand() % DECKSIZE]);
+        dodajKartu(rukaDiler, spil[rand() % DECKSIZE]);
+        dodajKartu(rukaIgrac, spil[rand() % DECKSIZE]);
+        dodajKartu(rukaIgrac, spil[rand() % DECKSIZE]);
 
         printf("\nTvoja ruka:\n");
         ispisiRuku(rukaIgrac->karte, rukaIgrac->brojKarata);
@@ -147,7 +147,7 @@ int start(Player* player) {
             } while (!validInput);
 
             if (izb == 'd') {
-                dodajKartu(rukaIgrac, spil[rand() % 52]);
+                dodajKartu(rukaIgrac, spil[rand() % DECKSIZE]);
                 ukupnoDilaneKarte++;
                 printf("\n\nTvoje nove karte su:\n");
                 ispisiRuku(rukaIgrac->karte, rukaIgrac->brojKarata);
@@ -174,7 +174,7 @@ int start(Player* player) {
         }
 
         while (bodoviDiler < 17) {
-            dodajKartu(rukaDiler, spil[rand() % 52]);
+            dodajKartu(rukaDiler, spil[rand() % DECKSIZE]);
             ukupnoDilaneKarte++;
             bodoviDiler = vrijednostRuke(rukaDiler->karte, rukaDiler->brojKarata);
             printf("\nDiler uzima kartu.\n");
