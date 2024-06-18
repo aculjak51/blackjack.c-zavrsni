@@ -8,16 +8,40 @@ void ispisiStatistiku(Player* player) {
             errPoruka("Greska pri otvaranju datoteke");
             return;
         }
+        int brojIgraca = 1;
+
+        fwrite(&brojIgraca, sizeof(int), 1, file);
+        fwrite(player, sizeof(Player), 1, file);
+        fclose(file);
+        printf("Statistika upisana u datoteku.\n");
+        return;
     }
 
     int brojIgraca = 0;
     fread(&brojIgraca, sizeof(int), 1, file);
-    brojIgraca++;
 
-    fseek(file, 0, SEEK_SET);
-    fwrite(&brojIgraca, sizeof(int), 1, file);
-    fseek(file, 0, SEEK_END);
-    fwrite(player, sizeof(Player), 1, file);
+    Player ups;
+    int found = 0;
+    long pos;
+
+    for (int i = 0; i < brojIgraca; i++) {
+        pos = ftell(file);
+        fread(&ups, sizeof(Player), 1, file);
+        if (strcmp(ups.ime, player->ime) == 0) {
+            found = 1;
+            fseek(file, pos, SEEK_SET);
+            fwrite(player, sizeof(Player), 1, file);
+            break;
+        }
+    }
+
+    if (!found) {
+        brojIgraca++;
+        fseek(file, 0, SEEK_SET);
+        fwrite(&brojIgraca, sizeof(int), 1, file);
+        fseek(file, 0, SEEK_END);
+        fwrite(player, sizeof(Player), 1, file);
+    }
 
     fclose(file);
     printf("Statistika upisana u datoteku.\n");
@@ -25,7 +49,7 @@ void ispisiStatistiku(Player* player) {
 
 
 void errPoruka(const char* message) {
-    fprintf(stderr, "%s: %s\n", message, strerror(errno));
+    printf("%s: %s\n", message, strerror(errno));
 }
 
 int strcasecmp(const char* s1, const char* s2) {
